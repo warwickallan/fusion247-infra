@@ -1,0 +1,71 @@
+# AS-BUILT knowledge stack — reflects what is genuinely deployed on fusion247-core (2026-07-22).
+# Neo4j + LightRAG are docker-image apps in Coolify with NAMED PERSISTENT VOLUMES.
+# Sanitised: all secrets are ${ENV} refs held in Coolify only. Private (tailnet-only).
+
+services:
+  # Neo4j 5.26 Community — derived graph, rebuildable via scripts/neo4j/acceptance.cypher.
+  neo4j:
+    image: neo4j:5.26-community
+    restart: unless-stopped
+    environment:
+      NEO4J_AUTH: ${NEO4J_AUTH}                              # neo4j/<password> (Coolify)
+      NEO4J_server_memory_heap_initial__size: "512m"
+      NEO4J_server_memory_heap_max__size: "1G"
+      NEO4J_server_memory_pagecache_size: "512m"
+      NEO4J_server_default__listen__address: "0.0.0.0"
+    volumes:
+      - neo4j-data:/data                                     # NAMED persistent volume
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:7474 >/dev/null 2>&1 || exit 1"]
+      interval: 20s
+      timeout: 8s
+      retries: 6
+      start_period: 40s
+    networks: [fusion247]
+    logging: { driver: json-file, options: { max-size: "10m", max-file: "3" } }
+    # Host tailnet ports: 7474:7474 (browser), 7687:7687 (bolt) — private via Hetzner firewall.
+
+  # LightRAG v1.5.4 — retrieval. Pinned by digest for reproducibility.
+  lightrag:
+    image: ghcr.io/hkuds/lightrag@sha256:de09cd75e32b6b45b104625a9fb229f84f3dec4827ecffc825aa4438b196cbe6
+    restart: unless-stopped
+    environment:
+      # Per-role OpenAI models (validated live). API keys + TOKEN_SECRET live in Coolify only.
+      LLM_BINDING: openai
+      LLM_BINDING_HOST: https://api.openai.com/v1
+      LLM_BINDING_API_KEY: ${OPENAI_API_KEY}
+      LLM_MODEL: gpt-5-mini
+      EXTRACT_LLM_MODEL: gpt-5-mini
+      KEYWORD_LLM_MODEL: gpt-5-nano
+      QUERY_LLM_MODEL: gpt-5.6-terra
+      EMBEDDING_BINDING: openai
+      EMBEDDING_BINDING_HOST: https://api.openai.com/v1
+      EMBEDDING_BINDING_API_KEY: ${OPENAI_API_KEY}
+      EMBEDDING_MODEL: text-embedding-3-large
+      EMBEDDING_DIM: "3072"
+      PORT: "9621"
+      LIGHTRAG_API_KEY: ${LIGHTRAG_API_KEY}                  # X-API-Key auth
+      TOKEN_SECRET: ${LIGHTRAG_TOKEN_SECRET}                 # set (no guest-mode JWT)
+      MAX_ASYNC_LLM: "4"
+      EXTRACT_MAX_ASYNC_LLM: "2"
+      KEYWORD_MAX_ASYNC_LLM: "2"
+      QUERY_MAX_ASYNC_LLM: "2"
+    volumes:
+      - lightrag-data:/app/data/rag_storage                 # NAMED persistent volume (index/vectors/graph)
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:9621/health >/dev/null || exit 1"]
+      interval: 20s
+      timeout: 8s
+      retries: 6
+      start_period: 40s
+    networks: [fusion247]
+    logging: { driver: json-file, options: { max-size: "10m", max-file: "3" } }
+    # Host tailnet port: 9621:9621 — private via Hetzner firewall.
+
+volumes:
+  neo4j-data:
+  lightrag-data:
+
+networks:
+  fusion247:
+    driver: bridge

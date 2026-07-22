@@ -19,7 +19,7 @@ Tailnet: `warwickjunior2011@`. `tailscaled` is **enabled at boot** (survives reb
 ## Access matrix (target)
 | Surface | Exposure | How |
 |---|---|---|
-| **SSH** | private (key-based) | ED25519 key from Yoga; works over tailnet `100.101.240.85` and (currently) public IP. Tailscale SSH intercept **disabled** (plain key auth). |
+| **SSH** | **private (tailnet-only)** | ED25519 key from Yoga over tailnet `100.101.240.85`. **Public port 22 removed from the Hetzner firewall** — no public SSH. Tailscale SSH intercept disabled (plain key auth). |
 | **Coolify** | private | bound behind Tailscale; reached via tailnet IP / MagicDNS |
 | **Directus** | private | via Tailscale only (mobile S21/Surface use tailnet) |
 | **Neo4j browser/Bolt** | private | Docker network + Tailscale only; no public Bolt |
@@ -27,11 +27,10 @@ Tailnet: `warwickjunior2011@`. `tailscaled` is **enabled at boot** (survives reb
 | **Redis** | private | Docker private network + auth; never public |
 
 ## Recovery paths (keep ≥1 independent)
-1. **Hetzner Cloud console** (VNC/rescue) — always available, independent of Tailscale.
+1. **Hetzner Cloud console** (VNC/rescue) — always available, independent of Tailscale. **Primary fallback** now that SSH is tailnet-only.
 2. **Key SSH over tailnet** `100.101.240.85`.
-3. Key SSH over public IP (to be restricted to tailnet once Coolify access is proven).
 
-## Pending hardening (apply alongside Phase 3)
-- Restrict inbound public SSH (UFW) to tailnet interface once tailnet SSH is proven reliable — keep Hetzner console as fallback.
-- Confirm `PasswordAuthentication no` (server was created key-only; no root password set).
-- Do **not** firewall before Coolify install completes (avoid self-lockout / proxy conflicts).
+## Hardening applied (as-built)
+- ✅ **Public SSH removed** — Hetzner firewall (id 11352036) inbound = `41641/udp` (Tailscale) + `icmp` only; **no public 22**. SSH is tailnet-only; Hetzner console is the out-of-band fallback.
+- ✅ Server created **key-only** (no root password set); Coolify/services private (tailnet + firewall).
+- ✅ Firewall applied **before** Coolify exposed :8000 — admin never publicly reachable.

@@ -1,10 +1,11 @@
-# Core stack — Redis + Directus. Deployed via Coolify to fusion247-core.
-# Secrets come from Coolify environment (see .env.example), never hardcoded.
-# Pinned versions (no :latest). Private Docker network; nothing published publicly.
+# AS-BUILT core stack — reflects what is genuinely deployed on fusion247-core (2026-07-22).
+# Deployed via Coolify (Redis = managed database; Directus = docker-image app). This file is
+# the sanitised, reproducible definition — secrets are ${ENV} refs held in Coolify, never here.
 
 services:
+  # Redis — deployed by Coolify as a managed database (image redis:7.2), private network, auth.
   redis:
-    image: redis:7.4.1-alpine
+    image: redis:7.2
     restart: unless-stopped
     command: >
       redis-server
@@ -19,29 +20,29 @@ services:
       timeout: 5s
       retries: 5
     networks: [fusion247]
-    logging:
-      driver: json-file
-      options: { max-size: "10m", max-file: "3" }
+    logging: { driver: json-file, options: { max-size: "10m", max-file: "3" } }
 
+  # Directus 11.17.4 (STAGING) — reads the live ops Supabase via the pooler.
+  # As-built: cache & rate-limiter OFF (Redis not yet wired to Directus); no depends_on.
   directus:
-    # Pinned to match the current local Directus (Phase 0 inventory).
     image: directus/directus:11.17.4
     restart: unless-stopped
-    depends_on:
-      redis:
-        condition: service_healthy
     environment:
       KEY: ${DIRECTUS_KEY}
       SECRET: ${DIRECTUS_SECRET}
       DB_CLIENT: pg
-      DB_CONNECTION_STRING: ${DIRECTUS_DB_CONNECTION_STRING}
+      DB_HOST: ${DB_HOST}                 # aws-0-eu-west-1.pooler.supabase.com
+      DB_PORT: ${DB_PORT}                 # 5432
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USER: ${DB_USER}                 # cp_directus.kerdinlgcfxnjrztwqde (ops)
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_SEARCH_PATH: ${DB_SEARCH_PATH}   # directus_sys,asdair,cockpit
+      # ⚠️ STAGING ONLY — PRODUCTION CUTOVER BLOCKER: use a proper CA / verify TLS in prod.
       DB_SSL__REJECT_UNAUTHORIZED: "false"
-      REDIS: "redis://:${REDIS_PASSWORD}@redis:6379"
-      CACHE_ENABLED: "true"
-      CACHE_STORE: redis
+      CACHE_ENABLED: "false"              # as-built; wire to Redis at production cutover
+      RATE_LIMITER_ENABLED: "false"
       NO_UPDATE_NOTIFIER: "1"
-      PUBLIC_URL: ${DIRECTUS_PUBLIC_URL}
-      # Directus keeps its own auth; managed Supabase schema is NOT migrated destructively.
+      PUBLIC_URL: ${DIRECTUS_PUBLIC_URL}  # http://100.101.240.85:8055 (tailnet)
     mem_limit: 768m
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8055/server/health"]
@@ -50,9 +51,8 @@ services:
       retries: 6
       start_period: 40s
     networks: [fusion247]
-    logging:
-      driver: json-file
-      options: { max-size: "10m", max-file: "3" }
+    logging: { driver: json-file, options: { max-size: "10m", max-file: "3" } }
+    # Port published on the host tailnet as 8055:8055 (Hetzner firewall keeps it private).
 
 networks:
   fusion247:

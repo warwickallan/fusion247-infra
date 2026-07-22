@@ -1,8 +1,27 @@
-# Service Classification — DRAFT (Phase 0)
+# Service Classification
 
-Observed read-only on the Yoga 2026-07-22. All current services run from `C:\Fusion247PKA`
-(secrets in `C:\.fusion247\*.env`). This is a first draft; each row is confirmed/refined before its
-migration phase. **Nothing has been stopped, moved or modified.**
+## Current (as-built) — cloud engine room, 2026-07-22
+What is **actually deployed** on `fusion247-core` (cloud runtime, Class A) vs. what remains a **Yoga-local bridge** (Class B) or **external managed** (Class C). This supersedes the Phase 0 draft below for current state.
+
+| Service | Class | Where it runs now | Notes |
+|---|---|---|---|
+| Directus (staging) | A | **cloud** (Coolify) | reads ops Supabase; local Directus still runs (not cut over) |
+| Redis | A | **cloud** | deployed; not yet wired to Directus |
+| Neo4j | A | **cloud** | derived graph; named volume; acceptance loaded |
+| LightRAG | A | **cloud** | retrieval; named volume; pilot passed |
+| Capture/Unified Gateway (Telegram) | B→A | **Yoga (unchanged)** | migration is **Larry-owned**; single-poller cutover pending |
+| Tower loop / Tower watch | B | **Yoga (unchanged)** | reads local session files → stays local bridge |
+| Contract-apply / YouTube capture | TBD | **Yoga (unchanged)** | classify at cutover |
+| Managed Supabase / GitHub / Honcho / Telegram / OpenAI | C | external | canonical / managed |
+
+> The cloud services are **additive**; no Yoga service was stopped or moved. Cutovers are Larry-owned.
+
+---
+
+## Historical baseline — DRAFT (Phase 0)
+
+Observed read-only on the Yoga 2026-07-22 (kept as the Phase 0 inventory). All current services run from `C:\Fusion247PKA`
+(secrets in `C:\.fusion247\*.env`). This was the first draft; **nothing was stopped, moved or modified** at Phase 0.
 
 ## Legend
 - **A = Cloud Runtime** (target: CX33) · **B = Local Bridge** (stays on Yoga) · **C = External Managed**
