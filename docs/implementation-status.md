@@ -4,12 +4,12 @@
 
 | Field | Value |
 |---|---|
-| **Current phase** | Phase 2 — Secure initial access (in progress) |
-| **Current human gate** | **GATE 2 — Tailscale node auth** (upcoming) |
+| **Current phase** | Phase 3 — Coolify (starting) |
+| **Current human gate** | **GATE 3A — Coolify admin account** (upcoming) |
 | **Current blocker** | None |
-| **Next automatic action** | SSH in, harden, install Tailscale → present GATE 2 |
+| **Next automatic action** | Install Coolify (official route) → present GATE 3A |
 | **Recurring-cost estimate** | ~€10.69/mo net (~£9–£11) — CX33 + IPv4 + backups |
-| **VPS resource use** | pending first login |
+| **VPS resource use** | idle: ~0.45 GB RAM used of 7.6; disk 2%; +2 GB swap unused |
 
 ## Server record — `fusion247-core`
 | Field | Value |
@@ -29,6 +29,10 @@
 - **Phase 1** — Hetzner: account (Warwick), project `Fusion247`, R/W API token (secured off-repo),
   ED25519 key generated + registered, **CX33 `fusion247-core` created in Nuremberg with backups**,
   cost approved (~£9–£11/mo).
+- **Phase 2** — Secure access: key SSH proven; timezone Europe/London; security updates applied
+  (kernel reboot pending → deferred to Phase 13 gate); 2 GB swap @ swappiness 10; **Tailscale joined**
+  (`100.101.240.85`), verified Yoga↔server (ping + tailnet key-SSH); Tailscale SSH intercept disabled;
+  `access-model.md` written.
 
 ## Guardrails in force
 - Target £10–£15/month total. Infra ~£10.69/mo net; Honcho + LightRAG meters still to come (each ≤£2, gated).
