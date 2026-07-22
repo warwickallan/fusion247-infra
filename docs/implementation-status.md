@@ -4,12 +4,17 @@
 
 | Field | Value |
 |---|---|
-| **Current phase** | Phase 3 — Coolify (finishing) |
-| **Current human gate** | **GATE 3B — connect GitHub to Coolify** (next) |
+| **Current phase** | Phase 7 (partial) — first service deployed; Directus next |
+| **Current human gate** | None pending (GATE 3B/GitHub only when private repo needed) |
 | **Current blocker** | None |
-| **Next automatic action** | After GitHub link: write Phase 4 compose stack, deploy Directus to Staging |
+| **Next automatic action** | Inspect managed Supabase **read-only**, then deploy Directus 11.17.4 → Staging |
 | **Recurring-cost estimate** | ~€10.69/mo net (~£9–£11) — CX33 + IPv4 + backups |
-| **VPS resource use** | Coolify idle: ~1.3 GB RAM used of 7.6; disk ~4%; swap unused |
+| **VPS resource use** | ~1.1 GB RAM used of 7.6 (Coolify + Redis); disk ~4%; swap unused |
+
+## Deployed services (fusion247-core)
+| Service | Coolify UUID | Image | Status |
+|---|---|---|---|
+| Redis | `s4mlb36rih6gil5pmzm31dj4` | redis:7.2 | ✅ healthy (private net, auth). Password held in Coolify only. |
 
 ## Server record — `fusion247-core`
 | Field | Value |
