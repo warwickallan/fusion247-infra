@@ -16,6 +16,7 @@
 |---|---|---|---|
 | Redis | `s4mlb36rih6gil5pmzm31dj4` | redis:7.2 | ✅ healthy (private net, auth). Password held in Coolify only. |
 | Directus (staging) | `ljiw2zciyel9a8gxiu9dvqz7` | directus/directus:11.17.4 | ✅ healthy; reads **ops** Supabase (`directus_sys,asdair,cockpit`); tailnet-only `http://100.101.240.85:8055`. Cache/rate-limiter off for now; cockpit extension not yet built in. |
+| Neo4j | `akdzfjqdpt8ivip4z202dz41` | neo4j:5.26-community | ✅ healthy; Cypher over Bolt OK; tailnet-only `http://100.101.240.85:7474` (browser) + 7687 (bolt). Heap 1G / pagecache 512M. Creds off-repo. **TODO: persistent volume before real ingestion; acceptance dataset (Karpathy packet) pending.** |
 
 ### Directus staging notes
 - Vanilla directus:11.17.4 (no flows exist in DB → zero duplicate-processing risk; verified `directus_flows=0`).
