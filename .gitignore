@@ -13,6 +13,8 @@ id_rsa*
 *secret*
 *token*
 *credential*
+# Exception: this doc lists secret *locations* only (no values) and must be tracked
+!docs/secrets-model.md
 *.tfstate
 *.tfstate.*
 coolify*.secret

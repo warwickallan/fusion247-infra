@@ -4,9 +4,17 @@
 
 | Field | Value |
 |---|---|
-| **Status** | 🅿️ **SESSION BANKED / PARKED 2026-07-22** — resumable, no work in flight |
-| **Deployed & proven** | Coolify + **Redis, Directus (staging), Neo4j, LightRAG** live; **Honcho + LightRAG pilots PASSED** |
-| **Acceptance** | **9 of 15 proofs** met (1,2,3,7,8,9,10,12,13,14) |
+| **Status** | ✅ **Infra follow-on complete** (2026-07-22): Neo4j acceptance, backups+restore, reboot/recovery, independence, docs, handover PR |
+| **Deployed & proven** | Coolify + **Redis, Directus (staging), Neo4j, LightRAG** live; **Honcho + LightRAG pilots PASSED**; **VPS reboot auto-recovery PASSED** |
+| **Acceptance** | **13 of 15 proofs** met (1,2,3,6,7,8,9,10,11,12,13,14,15). Remaining **4 & 5** (Telegram input+receipt+record) depend on the Telegram gateway migration = **Larry-owned**. |
+
+## Infra follow-on session (2026-07-22) — completed
+1. ✅ **Neo4j acceptance** — idempotent dataset (`scripts/neo4j/acceptance.cypher`); real **4-hop** query proven; 860 MiB.
+2. ✅ **Backups + restore rehearsal** — encrypted Coolify-config bundle → Yoga; non-destructive restore verified (64 tables/3 apps/86 env-vars).
+3. ✅ **VPS reboot + auto-recovery** — all services back in ~40s, Neo4j data survived, no manual steps (`independence-evidence.md`).
+4. ✅ **Yoga-independence evidence** — cloud recovered with zero Yoga involvement.
+5. ✅ **Docs + handover PR** — rebuild-runbook, rollback-plan, secrets-model, cost-model, independence-evidence.
+6. ✅ **Larry handover** — `larry-handover.md`.
 | **Current blocker** | None |
 | **Recurring-cost estimate** | ~€10.69/mo net (~£9–£11) infra + trivial API (LightRAG pilot = **$0.04**) + Honcho on $100 credit → within £10–15 target |
 | **VPS resource use** | ~2.4 GB RAM used of 7.6 (Coolify + 4 services); disk ~5%; swap unused |
