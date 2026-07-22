@@ -4,29 +4,38 @@
 
 | Field | Value |
 |---|---|
-| **Current phase** | Phase 0 → Phase 1 boundary |
-| **Current human gate** | **GATE 1A — Hetzner account** (pending) |
+| **Current phase** | Phase 2 — Secure initial access (in progress) |
+| **Current human gate** | **GATE 2 — Tailscale node auth** (upcoming) |
 | **Current blocker** | None |
-| **Next automatic action** | On GATE 1A completion: create `Fusion247` project, stage CX33 config, generate ED25519 SSH key, present GATE 1B (server cost) |
-| **Recurring-cost estimate** | £0 (nothing chargeable created yet) |
-| **VPS resource use** | n/a (no server yet) |
+| **Next automatic action** | SSH in, harden, install Tailscale → present GATE 2 |
+| **Recurring-cost estimate** | ~€10.69/mo net (~£9–£11) — CX33 + IPv4 + backups |
+| **VPS resource use** | pending first login |
 
-## Completed — Phase 0 (Reset & Orientation)
-- ✅ Read Yoga preflight report (REDUCED-SCOPE GO; 12 GB soldered RAM is the limiter → cloud engine room chosen).
-- ✅ Confirmed **no** production Docker/Coolify on the Yoga; nothing to stop, nothing removed.
-- ✅ Confirmed repo: `C:\fusion247-infra` (was empty) + remote `github.com/warwickallan/fusion247-infra` (empty, **public**).
-- ✅ Initialised git; baseline on `main`; created working branch `infra/hetzner-engine-room`.
-- ✅ Inventoried running Fusion247 processes & ports (see `service-classification.md`).
-- ✅ Identified local **Directus 11.17.4** (port 8074).
-- ✅ Identified Telegram listener = capture-gateway (single bot token, authorised-user gate, worker-id dedupe).
-- ✅ Identified Tower watcher deps (Supabase `pg` + local fs → local bridge).
-- ✅ First service-classification draft written.
+## Server record — `fusion247-core`
+| Field | Value |
+|---|---|
+| Server ID | 154049483 |
+| Public IPv4 | 178.104.171.240 |
+| IPv6 | 2a01:4f8:1c16:d697::/64 |
+| Type / OS | CX33 (4 vCPU / 8 GB / 80 GB) · Ubuntu 24.04 |
+| Region | Nuremberg (nbg1), DE |
+| Backups | Enabled (window 10–14 UTC) |
+| SSH key | `yoga-fusion247-core` (ED25519), private key local-only on Yoga |
+| Created | 2026-07-22 17:40 UTC |
+| Monthly max | ≈ €10.69 net |
+
+## Completed
+- **Phase 0** — Orientation: repo bootstrapped, services inventoried & classified, docs committed.
+- **Phase 1** — Hetzner: account (Warwick), project `Fusion247`, R/W API token (secured off-repo),
+  ED25519 key generated + registered, **CX33 `fusion247-core` created in Nuremberg with backups**,
+  cost approved (~£9–£11/mo).
 
 ## Guardrails in force
-- Target £10–£15/month. No chargeable resource without a shown cost breakdown + explicit approval.
-- No secrets committed (public repo). Secrets stay in `C:\.fusion247\*.env` / Coolify only.
-- `C:\Fusion247PKA`, existing Directus/gateway/Tower, Supabase schemas = **read-only** until an approved cutover.
-- No public admin surface; access private via Tailscale.
+- Target £10–£15/month total. Infra ~£10.69/mo net; Honcho + LightRAG meters still to come (each ≤£2, gated).
+- No secrets committed (public repo). API token + env secrets live only under `C:\.fusion247\`.
+- `C:\Fusion247PKA` and existing services remain read-only until an approved cutover.
+- No public admin surface; access will be private via Tailscale (Phase 2).
 
-## Next: Phase 1 — Hetzner account & server creation
-Navigate Warwick to Hetzner Cloud, present GATE 1A (account), then stage CX33 and present GATE 1B (cost) **before** creating anything chargeable.
+## Next: Phase 2 — Secure initial access
+Prove SSH key login → set timezone → apply security updates → configure modest swap → install Tailscale →
+**GATE 2 (authorise `fusion247-core` on the tailnet)** → write `docs/access-model.md`.
