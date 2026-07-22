@@ -24,7 +24,7 @@ OpenAI key stored **only in Coolify** (dedicated project **Fusion247 LightRAG**,
 
 ## Cost / metering
 - **Per-role = per-model**, isolated in the dedicated OpenAI project → the project dashboard shows exact £ by model (= by role). This is the meter.
-- This run: tiny (short packet, few extraction calls, 2 queries) — estimated **< £0.05**; exact figure in the OpenAI project dashboard (propagates within ~an hour).
+- This run: **actual cost = $0.04** (~£0.03), confirmed in the OpenAI project dashboard — one ingest (23 entities/25 relations) + two multi-hop queries. So the walking-skeleton is comfortably inside the £2–3/mo target barring heavy ingestion.
 - **Cost controls (per spec):** alert at projected **£3/mo**; stop non-essential ingestion at **£5**; do **not** ingest the full vault; **do not** change the embedding model after indexing without rebuilding vectors (3072-dim vectors are model-specific).
 
 ## Follow-ups
