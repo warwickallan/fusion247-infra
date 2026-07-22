@@ -1,0 +1,59 @@
+# Core stack — Redis + Directus. Deployed via Coolify to fusion247-core.
+# Secrets come from Coolify environment (see .env.example), never hardcoded.
+# Pinned versions (no :latest). Private Docker network; nothing published publicly.
+
+services:
+  redis:
+    image: redis:7.4.1-alpine
+    restart: unless-stopped
+    command: >
+      redis-server
+      --requirepass ${REDIS_PASSWORD}
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+      --save ""
+    mem_limit: 256m
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    networks: [fusion247]
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+  directus:
+    # Pinned to match the current local Directus (Phase 0 inventory).
+    image: directus/directus:11.17.4
+    restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      KEY: ${DIRECTUS_KEY}
+      SECRET: ${DIRECTUS_SECRET}
+      DB_CLIENT: pg
+      DB_CONNECTION_STRING: ${DIRECTUS_DB_CONNECTION_STRING}
+      DB_SSL__REJECT_UNAUTHORIZED: "false"
+      REDIS: "redis://:${REDIS_PASSWORD}@redis:6379"
+      CACHE_ENABLED: "true"
+      CACHE_STORE: redis
+      NO_UPDATE_NOTIFIER: "1"
+      PUBLIC_URL: ${DIRECTUS_PUBLIC_URL}
+      # Directus keeps its own auth; managed Supabase schema is NOT migrated destructively.
+    mem_limit: 768m
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8055/server/health"]
+      interval: 20s
+      timeout: 8s
+      retries: 6
+      start_period: 40s
+    networks: [fusion247]
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+networks:
+  fusion247:
+    driver: bridge
