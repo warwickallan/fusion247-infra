@@ -4,7 +4,7 @@
 
 | Field | Value |
 |---|---|
-| **Current phase** | Phase 7 (partial) — first service deployed; Directus next |
+| **Current phase** | Multi: Directus/Redis/Neo4j deployed; **Honcho pilot PASSED**; LightRAG + cockpit/prod cutover remain |
 | **Current human gate** | None pending (GATE 3B/GitHub only when private repo needed) |
 | **Current blocker** | None |
 | **Next automatic action** | Inspect managed Supabase **read-only**, then deploy Directus 11.17.4 → Staging |
