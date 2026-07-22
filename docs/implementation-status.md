@@ -4,12 +4,34 @@
 
 | Field | Value |
 |---|---|
-| **Current phase** | Multi: Directus/Redis/Neo4j deployed; **Honcho pilot PASSED**; LightRAG + cockpit/prod cutover remain |
-| **Current human gate** | None pending (GATE 3B/GitHub only when private repo needed) |
+| **Status** | 🅿️ **SESSION BANKED / PARKED 2026-07-22** — resumable, no work in flight |
+| **Deployed & proven** | Coolify + **Redis, Directus (staging), Neo4j, LightRAG** live; **Honcho + LightRAG pilots PASSED** |
+| **Acceptance** | **9 of 15 proofs** met (1,2,3,7,8,9,10,12,13,14) |
 | **Current blocker** | None |
-| **Next automatic action** | Inspect managed Supabase **read-only**, then deploy Directus 11.17.4 → Staging |
-| **Recurring-cost estimate** | ~€10.69/mo net (~£9–£11) — CX33 + IPv4 + backups |
-| **VPS resource use** | ~1.1 GB RAM used of 7.6 (Coolify + Redis); disk ~4%; swap unused |
+| **Recurring-cost estimate** | ~€10.69/mo net (~£9–£11) infra + trivial API (LightRAG pilot = **$0.04**) + Honcho on $100 credit → within £10–15 target |
+| **VPS resource use** | ~2.4 GB RAM used of 7.6 (Coolify + 4 services); disk ~5%; swap unused |
+
+## ⛔ Explicitly NOT started (owner decision — coordinate with Larry)
+Do **not** begin these on an infra-only resume; they affect live routing, MyPKA, Obsidian, Telegram and the product operating model:
+- Unified Gateway / **Telegram single-poller migration**
+- **Directus cockpit extension + production cutover**
+
+## ▶ Next resumed INFRA session — complete ONLY these
+1. **Neo4j acceptance dataset** + real multi-hop query proof (with persistent volume first).
+2. **Backups** + non-destructive **restore rehearsal**.
+3. **VPS reboot** + automatic-recovery test (GATE 6 before reboot).
+4. Final **Yoga-independence evidence**.
+5. **Infrastructure docs + handover PR** (do not merge without Warwick's QA).
+6. **Concise Larry handover**: live services + private access routes; deploy/health checks; where secrets live (no values); resource limits + measured usage; backup/recovery process; incomplete product cutovers; exact rollback position.
+
+## 👤 Larry-owned follow-on work (not infra)
+- Unified Gateway / Telegram single-poller migration
+- Directus cockpit extension + production cutover
+- ObsidiWikAi production integration
+- Neo4j ontology + governed graph writes
+- LightRAG production ingestion behaviour
+- Managed Honcho integration into Larry context
+- n8n architecture decision + any later visual-routing build
 
 ## Deployed services (fusion247-core)
 | Service | Coolify UUID | Image | Status |
