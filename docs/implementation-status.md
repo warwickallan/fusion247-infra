@@ -15,6 +15,13 @@
 | Service | Coolify UUID | Image | Status |
 |---|---|---|---|
 | Redis | `s4mlb36rih6gil5pmzm31dj4` | redis:7.2 | ✅ healthy (private net, auth). Password held in Coolify only. |
+| Directus (staging) | `ljiw2zciyel9a8gxiu9dvqz7` | directus/directus:11.17.4 | ✅ healthy; reads **ops** Supabase (`directus_sys,asdair,cockpit`); tailnet-only `http://100.101.240.85:8055`. Cache/rate-limiter off for now; cockpit extension not yet built in. |
+
+### Directus staging notes
+- Vanilla directus:11.17.4 (no flows exist in DB → zero duplicate-processing risk; verified `directus_flows=0`).
+- Real data present: `asdair.regulars`=91, orders=2, products=11.
+- Local Directus left running untouched (both share the ops DB; safe — same version, no migrations).
+- **Next:** build cockpit Vue extension into a custom image (needs Fusion247PKA / GATE 3B), then production cutover (GATE 4 for prod secrets).
 
 ## Server record — `fusion247-core`
 | Field | Value |
